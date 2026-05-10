@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Cpu } from "lucide-react";
 import { FaTwitter, FaInstagram, FaYoutube, FaGithub} from "react-icons/fa";
 
@@ -30,6 +31,14 @@ export function Footer() {
                         ))}
                     </div>
                 </div>
+            </div>
+            <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Products</h3>
+                <ul className="space-y-2">
+                    <li><Link href="/smartphones" className="text-sm text-gray-500">Smartphones</Link></li>
+                    <li><Link href="/laptops" className="text-sm text-gray-500">Laptops</Link></li>
+                    <li><Link href="/watches" className="text-sm text-gray-500">Smartwatches</Link></li>
+                </ul>
             </div>
         </div>
       </div>
