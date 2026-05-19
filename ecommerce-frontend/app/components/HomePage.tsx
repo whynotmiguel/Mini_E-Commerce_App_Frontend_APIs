@@ -11,6 +11,7 @@ import { DealsSection } from "./home/DealsSection";
 import { BrandMarquee } from "./home/BrandMarquee";
 import { FeaturedProducts } from "./home/FeaturedProducts";
 import { NewsletterSection } from "./home/NewsletterSection";
+import { Footer } from "./Footer";
 
 const MOCK_PRODUCTS: Product[] = [
   {
@@ -134,6 +135,7 @@ export default function HomePage() {
   }, []);
 
   return (
+    <>
     <main className="flex flex-col min-h-screen pb-10">
       <HeroSection />
       <TrustBadges />
@@ -143,5 +145,7 @@ export default function HomePage() {
       <FeaturedProducts products={products} />
       <NewsletterSection />
     </main>
+      <Footer />
+    </>
   );
 }
