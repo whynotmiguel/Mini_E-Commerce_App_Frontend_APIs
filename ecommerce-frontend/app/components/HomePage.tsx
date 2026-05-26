@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import type { Product } from "@/types";
 
-import { HeroSection } from "./home/HeroSection";
-import { TrustBadges } from "./home/TrustBadges";
-import { CategoryNav } from "./home/CategoryNav";
-import { DealsSection } from "./home/DealsSection";
-import { BrandMarquee } from "./home/BrandMarquee";
-import { FeaturedProducts } from "./home/FeaturedProducts";
-import { NewsletterSection } from "./home/NewsletterSection";
+import { HeroSection } from "../home/HeroSection";
+import { TrustBadges } from "../home/TrustBadges";
+import { CategoryNav } from "../home/CategoryNav";
+import { DealsSection } from "../home/DealsSection";
+import { BrandMarquee } from "../home/BrandMarquee";
+import { FeaturedProducts } from "../home/FeaturedProducts";
+import { NewsletterSection } from "../home/NewsletterSection";
 import { Footer } from "./Footer";
 
 const MOCK_PRODUCTS: Product[] = [
