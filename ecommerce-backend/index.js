@@ -1,13 +1,21 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
 const mongoose = require('mongoose');
+const cors = require('cors');
+
+const productRoutes = require('./routes/productRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const subscriberRoutes = require('./routes/subscriberRoutes');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => res.send('API running'));
+app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/subscribe', subscriberRoutes);
+
+app.get('/', (req, res) => res.send('E-Commerce API Running'));
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB connected'))
