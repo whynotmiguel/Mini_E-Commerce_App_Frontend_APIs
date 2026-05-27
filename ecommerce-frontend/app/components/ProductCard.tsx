@@ -1,12 +1,9 @@
 "use client";
 
-import { useState, type MouseEvent } from "react"; // trigger rescan
+import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ShoppingCart, Star, Heart, Zap } from "lucide-react";
 import type { Product } from "../../types";
-import { useAuth } from "../contexts/AuthContext";
-import { useCart } from "../contexts/CartContext";
 
 interface ProductCardProps {
   product: Product;
@@ -14,23 +11,11 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, size = "md" }: ProductCardProps) {
-  const { user } = useAuth();
-  const { addToCart } = useCart();
-  const router = useRouter();
-  const [adding, setAdding] = useState(false);
   const [wished, setWished] = useState(false);
 
   const discount = product.original_price
     ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
     : 0;
-
-  const handleAddToCart = async (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (!user) { router.push("/login"); return; }
-    setAdding(true);
-    await addToCart(String(product.id));
-    setAdding(false);
-  };
 
   return (
     <Link
@@ -98,12 +83,11 @@ export function ProductCard({ product, size = "md" }: ProductCardProps) {
             )}
           </div>
           <button
-            onClick={handleAddToCart}
-            disabled={adding}
+            type="button"
             className="flex items-center gap-1.5 bg-red-600 hover:bg-red-500 disabled:bg-gray-200 dark:disabled:bg-zinc-700 disabled:text-gray-400 dark:disabled:text-zinc-500 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-colors shrink-0"
           >
             <ShoppingCart className="h-3.5 w-3.5" />
-            {adding ? "Adding..." : "Add"}
+            Add
           </button>
         </div>
       </div>

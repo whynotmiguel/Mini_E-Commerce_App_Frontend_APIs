@@ -1,116 +1,56 @@
 "use client";
 
-import { Layout } from "@/components/Layout";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
-import { useCart } from "@/contexts/CartContext";
-import { useAuth } from "@/contexts/AuthContext";
-import { ShippingAddress } from "@/types";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { Layout } from "../components/Layout";
+
+type ShippingAddress = {
+  full_name: string;
+  email: string;
+  address: string;
+  city: string;
+  postal_code: string;
+  country: string;
+};
+
+type CheckoutItem = {
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
+};
 
 export default function CheckoutPage() {
-  const router = useRouter();
-  const { cartItems, cartTotal, clearCart } = useCart();
-  const { user, loading: authLoading } = useAuth();
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
     full_name: "",
-    email: user?.email || "",
+    email: "",
     address: "",
     city: "",
     postal_code: "",
     country: "",
   });
-  if (authLoading) {
-    return (
-      <Layout>
-        <div className="mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-8 py-12">
-          <p className="text-center text-gray-500 dark:text-zinc-400">Loading...</p>
-        </div>
-      </Layout>
-    );
-  }
-  if (!user) {
-    return (
-      <Layout>
-        <div className="mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Please sign in</h1>
-            <p className="text-gray-500 dark:text-zinc-400 mb-6">You need to be signed in to checkout</p>
-            <Link href="/login" className="inline-block bg-red-600 hover:bg-red-500 text-white font-semibold px-6 py-3 rounded-lg">
-              Sign In
-            </Link>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
-  if (cartItems.length === 0) {
-    return (
-      <Layout>
-        <div className="mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Your cart is empty</h1>
-            <p className="text-gray-500 dark:text-zinc-400 mb-6">
-                Add some items before checking out</p>
-            <Link href="/smartphones" className="inline-block bg-red-600 hover:bg-red-500 text-white font-semibold px-6 py-3 rounded-lg">
-              Continue Shopping
-            </Link>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
-  
+
+  const cartItems: CheckoutItem[] = [
+    { id: "1", name: "Sample Product 1", quantity: 1, price: 199 },
+    { id: "2", name: "Sample Product 2", quantity: 2, price: 99 },
+  ];
+  const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+
   const handleInputChange = (
-    field: keyof ShippingAddress, value: string) => {
+    field: keyof ShippingAddress,
+    value: string,
+  ) => {
     setShippingAddress((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-
-    try {
-      // Create order
-      const { data: orderData, error: orderError } = await supabase
-        .from("orders")
-        .insert([{
-            user_id: user.id,
-            total: cartTotal * 1.1,
-            status: "completed",
-            shipping_address: shippingAddress,
-          }])
-        .select();
-
-      if (orderError) throw orderError;
-      const orderId = (orderData as any)[0]?.id;
-
-      // Create order items
-      if (orderId) {
-        const orderItems = cartItems.map((item) => ({
-          order_id: orderId,
-          product_id: item.product_id,
-          quantity: item.quantity,
-          price_at_purchase: item.product.price,
-        }));
-
-        const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
-        if (itemsError) throw itemsError;
-      }
-
-      await clearCart();
-      router.push(`/checkout/success?orderId=${orderId}`);
-    } catch (err) {
-      setError((err as Error).message || "Failed to complete order");
-    } finally {
-      setLoading(false);
-    }
+    setTimeout(() => setLoading(false), 500);
   };
 
 
@@ -224,8 +164,8 @@ export default function CheckoutPage() {
             <div className="space-y-4 mb-6 pb-6 border-b border-gray-200 dark:border-zinc-800">
               {cartItems.map((item) => (
                 <div key={item.id} className="flex justify-between text-sm">
-                  <span className="text-gray-600 dark:text-zinc-400">{item.product.name} x {item.quantity}</span>
-                  <span className="font-semibold">${(item.product.price * item.quantity).toLocaleString()}</span>
+                  <span className="text-gray-600 dark:text-zinc-400">{item.name} x {item.quantity}</span>
+                  <span className="font-semibold">${(item.price * item.quantity).toLocaleString()}</span>
                 </div>
               ))}
             </div>

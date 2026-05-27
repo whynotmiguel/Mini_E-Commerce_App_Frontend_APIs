@@ -1,5 +1,8 @@
 import * as React from "react";
-import { cn } from "@/lib/utils";
+
+function cn(...classes: Array<string | null | undefined | false>) {
+  return classes.filter(Boolean).join(" ");
+}
 
 type ButtonVariant = "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
 type ButtonSize = "default" | "sm" | "lg" | "icon";

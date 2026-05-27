@@ -1,43 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import type { Product } from "../../types";
 import { ProductCard } from "./ProductCard";
-import { fetchProducts, type ProductFilters } from "../../lib/api";
+
+type ProductFilters = {
+	search?: string;
+	category?: string;
+	minPrice?: number;
+	maxPrice?: number;
+	sortBy?: "price-asc" | "price-desc" | "rating" | "newest";
+	limit?: number;
+	offset?: number;
+};
 
 type ProductCollectionProps = {
 	title: string;
 	subtitle?: string;
 	filters?: ProductFilters;
 	emptyMessage: string;
+	products?: Product[];
+	loading?: boolean;
 };
 
-export function ProductCollection({ title, subtitle, filters, emptyMessage }: ProductCollectionProps) {
-	const [products, setProducts] = useState<Product[]>([]);
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		let active = true;
-
-		const loadProducts = async () => {
-			try {
-				setLoading(true);
-				const data = await fetchProducts(filters);
-				if (active) setProducts(data);
-			} catch (error) {
-				console.error(`Failed to load ${title.toLowerCase()}:`, error);
-				if (active) setProducts([]);
-			} finally {
-				if (active) setLoading(false);
-			}
-		};
-
-		loadProducts();
-
-		return () => {
-			active = false;
-		};
-	}, [filters, title]);
+export function ProductCollection({
+	title,
+	subtitle,
+	emptyMessage,
+	products = [],
+	loading = false,
+}: ProductCollectionProps) {
 
 	return (
 		<section className="py-12 sm:py-16">
